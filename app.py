@@ -3,18 +3,18 @@ import folium
 import json
 from streamlit.components.v1 import html
 
-# Skema warna abu-abu dari paling gelap ke paling pudar
-colors_gray = [
-    "#1a1a1a",  # Abu-abu paling gelap
-    "#333333",
-    "#4d4d4d",
-    "#666666",
-    "#808080",
-    "#999999",
-    "#b3b3b3",
-    "#cccccc",
-    "#e6e6e6",
-    "#f2f2f2"  # Abu-abu paling pudar
+# Skema warna merah dari paling gelap ke paling pudar
+colors_blue = [
+    "#00008B",  # Biru paling gelap
+    "#0000CD",
+    "#1E90FF",
+    "#4169E1",
+    "#6495ED",
+    "#87CEEB",
+    "#ADD8E6",
+    "#B0E0E6",
+    "#BFEFFF",
+    "#CFE2F3"  # Biru paling pudar
 ]
 
 # Membaca data GeoJSON
@@ -35,7 +35,7 @@ def popup_function(feature):
 sorted_features = sorted(geojson_data['features'], key=lambda x: x['properties']['KEPADATAN'], reverse=True)
 
 # Buat daftar warna sesuai urutan fitur yang diurutkan
-feature_colors = {feature['properties']['DESA']: colors_gray[i] for i, feature in enumerate(sorted_features)}
+feature_colors = {feature['properties']['DESA']: colors_blue[i] for i, feature in enumerate(sorted_features)}
 
 # Membuat peta Folium
 m = folium.Map()
@@ -73,4 +73,4 @@ with open('index.html', 'r', encoding='utf-8') as f:
 html(map_html, height=600)
 
 # Menampilkan judul untuk peta
-st.write("Peta dengan skala warna abu-abu berdasarkan kepadatan penduduk, dari paling gelap ke paling pudar")
+st.write("Peta dengan skala warna biru berdasarkan kepadatan penduduk, dari paling gelap ke paling pudar")
