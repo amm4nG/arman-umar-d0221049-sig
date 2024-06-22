@@ -2,8 +2,9 @@ import streamlit as st
 import folium
 import json
 from streamlit.components.v1 import html
+import pandas as pd
 
-# Skema warna merah dari paling gelap ke paling pudar
+# Skema warna biru dari paling gelap ke paling pudar
 colors_blue = [
     "#00008B",  # Biru paling gelap
     "#0000CD",
@@ -47,9 +48,9 @@ for feature in sorted_features:
     
     style_function = lambda x, color=color: {
         'fillColor': color,
-        'color': 'black',
+        'color': 'red',
         'weight': 1,
-        'fillOpacity': 0.7,
+        'fillOpacity': 0.8,
     }
     
     geojson_layer = folium.GeoJson(
@@ -70,7 +71,27 @@ with open('index.html', 'r', encoding='utf-8') as f:
     map_html = f.read()
 
 # Menampilkan peta di Streamlit menggunakan komponen HTML
-html(map_html, height=600)
+html(map_html, height=400)
 
 # Menampilkan judul untuk peta
 st.write("Peta dengan skala warna biru berdasarkan kepadatan penduduk, dari paling gelap ke paling pudar")
+
+# Membuat DataFrame untuk tabel desa dan kepadatan
+data = {
+    "Nama Desa": [feature['properties']['DESA'] for feature in sorted_features],
+    "Kepadatan": [feature['properties']['KEPADATAN'] for feature in sorted_features],
+    "Warna": [feature_colors[feature['properties']['DESA']] for feature in sorted_features]
+}
+
+df = pd.DataFrame(data)
+
+# Fungsi untuk mewarnai sel warna
+def color_row(row):
+    return [f"background-color: {row['Warna']};"] * len(row)
+
+# Menerapkan fungsi pewarnaan ke DataFrame Styler
+styled_df = df.style.apply(color_row, axis=1)
+
+# Menampilkan tabel desa dan kepadatan di Streamlit
+st.write("Tabel Desa dan Kepadatan Penduduk serta Warna di Peta")
+st.dataframe(styled_df)
